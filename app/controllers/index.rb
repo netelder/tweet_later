@@ -1,4 +1,5 @@
 get '/' do
+  #adding comment
   erb :index
 end
 
