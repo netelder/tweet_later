@@ -19,6 +19,8 @@ require 'sinatra'
 require 'shotgun'
 
 require 'erb'
+require 'sidekiq'
+require 'redis'
 
 require 'oauth'
 require 'twitter'

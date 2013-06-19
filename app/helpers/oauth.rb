@@ -21,15 +21,6 @@ def request_token
   session[:request_token]
 end
 
-def authorize_for_tweeting(user)
-  new_user = Twitter::Client.new(
-    :oauth_token => user.oauth_token,
-    :oauth_token_secret => user.oauth_secret
-  )
-  new_user
-end
-
-
 def current_user
   @current_user = User.find(session[:user_id]) if session[:user_id]
 end
