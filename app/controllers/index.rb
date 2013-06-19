@@ -8,13 +8,21 @@ post '/tweeting' do
   sent = "true"
   begin
     tweet = Tweet.create(status: params[:status], user: current_user)
-
-    TweetWorker.perform_async(tweet.id)
+    worker = TweetWorker.perform_async(tweet.id)
+    tweet.jid = worker
+    tweet.save
   rescue
     sent = "false"
   end
-  sent.to_json
+  [tweet.jid, sent].to_json
 end
+
+get '/status/:job_id' do
+  content_type :json
+  
+  job_is_complete(params[:job_id]).to_json
+end
+
 
 get '/sign_in' do
   redirect request_token.authorize_url
