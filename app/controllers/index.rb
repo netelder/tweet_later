@@ -8,6 +8,7 @@ post '/tweeting' do
   sent = "true"
   begin
     tweet = Tweet.create(status: params[:status], user: current_user)
+    # worker = TweetWorker.perform_at(10.seconds.from_now, tweet.id)
     worker = TweetWorker.perform_async(tweet.id)
     tweet.jid = worker
     tweet.save
@@ -19,7 +20,7 @@ end
 
 get '/status/:job_id' do
   content_type :json
-  
+
   job_is_complete(params[:job_id]).to_json
 end
 

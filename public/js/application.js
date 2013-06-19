@@ -5,9 +5,12 @@ function waitForStatus(status, jid, cnt){
     method: 'GET'
   }).done(function(response){
       var condition = response;
-      if (response === "false" && cnt < 5) {
+      if (response === false && cnt < 10) {
         cnt++;
-        setTimeout(function(){waitForStatus(status, jid, cnt); }, 1000);
+        setTimeout(function(){
+          waitForStatus(status, jid, cnt);
+          console.log(cnt);
+        }, 2000);
       }
       else{
         $('#'+jid).text( status + ': ' + condition);

@@ -5,7 +5,6 @@ class TweetWorker
     tweet = Tweet.find(tweet_id)
     user = tweet.user
     new_user = authorize_for_tweeting(user)
-
     new_user.update(tweet.status)
   end 
 
