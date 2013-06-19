@@ -1,0 +1,19 @@
+<div class="container">
+  <h2>Welcome to the Church of Latter Day Tweets!</h2>
+
+  <% if logged_in? %>
+    <div>
+      <div id="status"><p><br></p></div>
+      <div id="user"><%=@current_user.username%></div>
+      <form id="send-tweet" action="/tweeting" method="post">
+          <input type ="text" name="tweet" placeholder="your tweet">
+          <input type="submit" value="Send Tweet!">
+      </form>
+      <button><a href="/sign_out">Sign Out</a></button>
+      </div>
+      <div id="tweeters"></div>
+  <% else %>
+    <button><a href="/sign_in">Sign In with Twitter</a></button>
+  <% end %>
+  
+</div>
