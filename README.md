@@ -61,4 +61,17 @@ the Chronic gem allows a wide variety of time specifications (including strings 
 that much more friendly.
 
 
+## Monitoring Sidekiq
+
+Sidekiq includes a Sinatra instance that allows web-based monitoring of queues/jobs.  To add it to an existing
+Sinatra system, add the following to the config.ru file:
+
+```ruby
+require 'sidekiq/web'
+run Rack::URLMap.new('/' => Sinatra::Application, '/sidekiq' => Sidekiq::Web)
+```
+
+Point your browser at <hostname>/sidekiq for a slick UI for monitoring and deleting jobs.
+
+
 
