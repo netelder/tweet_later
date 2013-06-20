@@ -29,6 +29,7 @@ $(document).ready(function() {
       method: 'POST',
       data: {status: status, date: date}
     }).done(function(response){
+      console.log(response);
       var jid = response[0];
       if (response === "false"){
         alert("Tweet failed to post.  Please try again");

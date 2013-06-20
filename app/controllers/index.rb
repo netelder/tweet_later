@@ -7,7 +7,8 @@ post '/tweeting' do
   content_type :json
   sent = "true"
   puts "----------------------"
-  p post_time = (Chronic.parse(params[:date]) - Time.now).to_f
+  p params
+  post_time = (Chronic.parse(params[:date]) - Time.now).to_f
   begin
     tweet = Tweet.create(status: params[:status], user: current_user)
     # worker = TweetWorker.perform_at(10.seconds.from_now, tweet.id)
@@ -15,20 +16,23 @@ post '/tweeting' do
       worker = TweetWorker.perform_async(tweet.id)
     else
       worker = TweetWorker.perform_in(post_time, tweet.id)
-      puts "-----perform_in----------"
+      tweet.scheduled = Time.at(Time.now + post_time)
     end
     tweet.jid = worker
     tweet.save
   rescue
     sent = "false"
   end
-  [tweet.jid, sent].to_json
+  [tweet.jid, sent, Time.at(Time.now + post_time)].to_json
 end
 
 get '/status/:job_id' do
   content_type :json
-  if Tweet.find_by_jid(params[:job_id]).failed?
+  tweet = Tweet.find_by_jid(params[:job_id])
+  if tweet.failed?
     "duplicate".to_json
+  elsif !tweet.scheduled.nil?
+    tweet.scheduled.to_json
   else
     job_is_complete(params[:job_id]).to_json
   end

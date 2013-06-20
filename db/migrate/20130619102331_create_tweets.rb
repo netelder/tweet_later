@@ -4,6 +4,7 @@ class CreateTweets < ActiveRecord::Migration
       t.string :status
       t.string :jid
       t.string :failed
+      t.datetime :scheduled
       t.references :user
       t.timestamps
     end
