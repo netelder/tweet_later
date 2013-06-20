@@ -6,4 +6,8 @@ class Tweet < ActiveRecord::Base
     self.save
   end
 
+  def failed?
+    self.failed
+  end
+
 end

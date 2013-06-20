@@ -20,8 +20,11 @@ end
 
 get '/status/:job_id' do
   content_type :json
-
-  job_is_complete(params[:job_id]).to_json
+  if Tweet.find_by_jid(params[:job_id]).failed?
+    "duplicate".to_json
+  else
+    job_is_complete(params[:job_id]).to_json
+  end
 end
 
 

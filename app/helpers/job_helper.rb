@@ -6,7 +6,7 @@ helpers do
     return false if pending.find { |job| job.jid == jid }
     return false if waiting.find { |job| job.jid == jid }
     return false if working.find { |worker, info| info["payload"]["jid"] == jid }
-    true
+    return "posted!"
   end
 
 end

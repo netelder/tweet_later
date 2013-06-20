@@ -9,7 +9,6 @@ function waitForStatus(status, jid, cnt){
         cnt++;
         setTimeout(function(){
           waitForStatus(status, jid, cnt);
-          console.log(cnt);
         }, 2000);
       }
       else{
