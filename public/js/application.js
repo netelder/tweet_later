@@ -9,7 +9,7 @@ function waitForStatus(status, jid, cnt){
         cnt++;
         setTimeout(function(){
           waitForStatus(status, jid, cnt);
-        }, 2000);
+        }, 1000);
       }
       else{
         $('#'+jid).text( status + ': ' + condition);
@@ -24,6 +24,7 @@ $(document).ready(function() {
     var status = $('input[name="status"]').val();
     var date = $('input[name="date"]').val();
     $('input[name="status"]').val('');
+    $('input[name="date"]').val('Now');
     $.ajax({
       url: '/tweeting',
       method: 'POST',
