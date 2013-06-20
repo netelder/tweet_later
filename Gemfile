@@ -17,6 +17,7 @@ gem 'rake'
 gem 'shotgun'
 gem 'sidekiq'
 gem 'redis'
+gem 'slim'
 
 gem 'oauth'
 gem 'twitter'
