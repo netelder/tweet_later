@@ -1,1 +1,1 @@
-bundle exec sidekiq -r./config/environment.rb
+bundle exec sidekiq -c 5 -r./config/environment.rb

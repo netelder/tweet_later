@@ -6,10 +6,17 @@ end
 post '/tweeting' do
   content_type :json
   sent = "true"
+  puts "----------------------"
+  p post_time = (Chronic.parse(params[:date]) - Time.now).to_f
   begin
     tweet = Tweet.create(status: params[:status], user: current_user)
     # worker = TweetWorker.perform_at(10.seconds.from_now, tweet.id)
-    worker = TweetWorker.perform_async(tweet.id)
+    if post_time < 20
+      worker = TweetWorker.perform_async(tweet.id)
+    else
+      worker = TweetWorker.perform_in(post_time, tweet.id)
+      puts "-----perform_in----------"
+    end
     tweet.jid = worker
     tweet.save
   rescue

@@ -25,6 +25,8 @@ require 'redis'
 require 'oauth'
 require 'twitter'
 
+require 'chronic'
+
 # Some helper constants for path-centric logic
 APP_ROOT = Pathname.new(File.expand_path('../../', __FILE__))
 

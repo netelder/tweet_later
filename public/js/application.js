@@ -22,17 +22,14 @@ $(document).ready(function() {
   $('#send-tweet').on('submit', function(e){
     e.preventDefault();
     var status = $('input[name="status"]').val();
+    var date = $('input[name="date"]').val();
     $('input[name="status"]').val('');
-    $('input[name="status"]').attr('disabled', 'disabled');
-    $('input[type="submit"]').attr('disabled', 'disabled');
     $.ajax({
       url: '/tweeting',
       method: 'POST',
-      data: {status: status}
+      data: {status: status, date: date}
     }).done(function(response){
       var jid = response[0];
-      $('input[name="status"]').removeAttr('disabled');
-      $('input[type="submit"]').removeAttr('disabled');
       if (response === "false"){
         alert("Tweet failed to post.  Please try again");
       }

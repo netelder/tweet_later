@@ -1,4 +1,4 @@
-source :rubygems
+source 'https://rubygems.org'
 
 # PostgreSQL driver
 gem 'pg'
@@ -21,6 +21,8 @@ gem 'slim'
 
 gem 'oauth'
 gem 'twitter'
+
+gem 'chronic'
 
 group :test do
   gem 'faker'
