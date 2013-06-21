@@ -6,11 +6,11 @@ how they work, and how they can be controlled/monitored to provide feedback to t
 ### Propagating errors from Twitter to the User
 
 The first task was to figure out how to better process errors from Twitter.  Twitter returns errors
-as http error codes, which the Twitter gem maps to various error strings.  In the case of duplicate
+as http error codes, which the Twitter gem [maps to various error strings](https://github.com/sferik/twitter/tree/master/lib/twitter/error).  In the case of duplicate
 posts (or other unspecified posting errors), Twitter returns a 403 error, which the gem translates to
 Twitter::Error::Forbidden.
 
-In order to access this error, it's necessary to hook the exception processing within Sidekiq.  While monkeypatching does work (I tried it), the recommended approach is to define and register a middleware
+In order to access this error, it's necessary to hook the exception processing within Sidekiq.  While monkeypatching does work (I tried it), the [recommended approach](https://github.com/bugsnag/bugsnag-ruby/blob/master/lib/bugsnag/sidekiq.rb) is to define and register a middleware
 handler with Sidekiq:
 
 ```ruby
@@ -44,7 +44,10 @@ Additional `rescue` statements can be used to handle other Twitter errors.
 Sidekiq provides 'perform_in' and 'perform_at' methods to allow jobs to be scheduled for the future.  A 
 simple extention to the UI allows the user to specify a future date/time for the post to occur.  Using
 the Chronic gem allows a wide variety of time specifications (including strings like 'next tuesday'), making the UI
-that much more friendly.
+that much more friendly.  Chronic can fail in odd ways, so be sure to check for a nil return value!  One more
+thing for production scale use: when the argument given to Chronic resolves to a day (eg 'next tuesday', it returns a 
+value of noon.  You may want to add some time variation using rand to avoid firing off several thousand
+Tweet posts all at one time....
 
 One of the challenges with Sidekiq is that it considers its worker queues immutable.  There are no
 direct methods to select/modify a particular job.  One must iterate through a queue, and 
