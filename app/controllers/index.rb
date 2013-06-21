@@ -38,6 +38,17 @@ get '/status/:job_id' do
   end
 end
 
+get '/tweets/future' do
+  @tweets = Tweet.all(:conditions => ["scheduled >= ? AND user_id = ?", Time.now, current_user.id])
+  erb :alltweets
+end
+
+get '/tweets/delete/:id' do
+  if Tweet.exists?(params[:id]) && current_user.id == Tweet.find(params[:id]).user_id
+    Tweet.destroy(params[:id])
+  end
+  redirect '/tweets/future'
+end
 
 get '/sign_in' do
   redirect request_token.authorize_url

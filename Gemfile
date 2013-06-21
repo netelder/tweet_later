@@ -23,6 +23,8 @@ gem 'oauth'
 gem 'twitter'
 
 gem 'chronic'
+gem 'awesome_print'
+gem 'munger'
 
 group :test do
   gem 'faker'

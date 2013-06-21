@@ -1,0 +1,5 @@
+<div class="container">
+<% @tweets.each do |tweet| %>
+<%= " #{tweet.scheduled}: #{tweet.status} <a href='/tweets/delete/#{tweet.id}'>Delete</a><br>" %>
+<% end %>
+</div>

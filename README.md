@@ -10,8 +10,8 @@ as http error codes, which the Twitter gem maps to various error strings.  In th
 posts (or other unspecified posting errors), Twitter returns a 403 error, which the gem translates to
 Twitter::Error::Forbidden.
 
-In order to access this error, it's necessary to hook the exception processing within Sidekiq.  Per the
-documentataion, the recommended approach is to define and register a middleware handler with Sidekiq:
+In order to access this error, it's necessary to hook the exception processing within Sidekiq.  While monkeypatching does work (I tried it), the recommended approach is to define and register a middleware
+handler with Sidekiq:
 
 ```ruby
 module TweetLater
@@ -34,9 +34,17 @@ end
 ```
 
 To communicate the status with the front-end javascript, a field in the Tweet database is set to 'failed'
-to indicate that this post was rejected with a '403' error from Twitter.
+to indicate that this post was rejected with a '403' error from Twitter.  Not, but without an explicit
+"duplicate" error message from Twitter, about the best we can do.
 
 Additional `rescue` statements can be used to handle other Twitter errors.
+
+### Scheduled Tweets
+
+Sidekiq provides 'perform_in' and 'perform_at' methods to allow jobs to be scheduled for the future.  A 
+simple extention to the UI allows the user to specify a future date/time for the post to occur.  Using
+the Chronic gem allows a wide variety of time specifications (including strings like 'next tuesday'), making the UI
+that much more friendly.
 
 One of the challenges with Sidekiq is that it considers its worker queues immutable.  There are no
 direct methods to select/modify a particular job.  One must iterate through a queue, and 
@@ -49,19 +57,14 @@ queue.each do |job|
   job.delete if job.jid == 'abcdef1234567890'
 end
 ```
-
 For small implementations like TweetLater, this is not a serious problem.  For a large implementation 
 with millions of jobs, this could well be a disaster.
 
-## Scheduled Tweets
+So, rather than try to manipulate the queue, we can simply delete the tweet from the Tweet database.
+When Sidekiq attempts to execute the job, the database lookup will fail, and the job will be
+automatically deleted.
 
-Sidekiq provides 'perform_in' and 'perform_at' methods to allow jobs to be scheduled for the future.  A 
-simple extention to the UI allows the user to specify a future date/time for the post to occur.  Using
-the Chronic gem allows a wide variety of time specifications (including strings like 'next tuesday'), making the UI
-that much more friendly.
-
-
-## Monitoring Sidekiq
+### Monitoring Sidekiq
 
 Sidekiq includes a Sinatra instance that allows web-based monitoring of queues/jobs.  To add it to an existing
 Sinatra system, add the following to the config.ru file:
@@ -71,7 +74,7 @@ require 'sidekiq/web'
 run Rack::URLMap.new('/' => Sinatra::Application, '/sidekiq' => Sidekiq::Web)
 ```
 
-Point your browser at <hostname>/sidekiq for a slick UI for monitoring and deleting jobs.
+Then point your browser at <hostname>/sidekiq for a slick UI for monitoring and deleting jobs.
 
 
 
