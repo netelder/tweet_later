@@ -45,7 +45,7 @@ Sidekiq provides 'perform_in' and 'perform_at' methods to allow jobs to be sched
 simple extention to the UI allows the user to specify a future date/time for the post to occur.  Using
 the Chronic gem allows a wide variety of time specifications (including strings like 'next tuesday'), making the UI
 that much more friendly.  Chronic can fail in odd ways, so be sure to check for a nil return value!  One more
-thing for production scale use: when the argument given to Chronic resolves to a day (eg 'next tuesday', it returns a 
+thing for production scale use: when the argument given to Chronic resolves to a day (eg 'next tuesday'), it returns a 
 value of noon.  You may want to add some time variation using rand to avoid firing off several thousand
 Tweet posts all at one time....
 
